@@ -11,7 +11,7 @@ ai-native-mobile-sample/
 ├── dart/
 │   └── sample/          # Flutter Todo app sample
 ├── typescript/
-│   └── sample/          # React Native Todo app sample (coming soon)
+│   └── sample/          # React Native Todo app sample
 └── README.md
 ```
 
@@ -33,14 +33,20 @@ A Todo application built with Flutter demonstrating:
 
 **Location**: `typescript/sample`
 
-Coming soon...
+A Todo application built with React Native and TypeScript demonstrating:
+- Native mobile UI components
+- React hooks for state management
+- TypeScript strict mode
+- Jest testing with React Native Testing Library
+
+[View React Native sample README](./typescript/sample/README.md)
 
 ## Getting Started
 
 Each sample has its own README with specific setup and running instructions. Navigate to the respective directory to get started:
 
 - Flutter: [dart/sample/README.md](./dart/sample/README.md)
-- React Native: `typescript/sample/README.md` (coming soon)
+- React Native: [typescript/sample/README.md](./typescript/sample/README.md)
 
 ## Purpose
 
