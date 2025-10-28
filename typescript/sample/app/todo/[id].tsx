@@ -133,6 +133,7 @@ export default function TodoDetailScreen() {
                   padding: 0,
                   margin: 0,
                   textDecorationLine: todo.status === TodoStatus.DONE ? 'line-through' : 'none',
+                  textDecorationColor: todo.status === TodoStatus.DONE ? '#FF6600' : undefined,
                 }}
                 value={title}
                 onChangeText={setTitle}

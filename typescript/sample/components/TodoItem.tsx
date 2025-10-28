@@ -63,6 +63,11 @@ export function TodoItem({ todo }: TodoItemProps) {
                   ? 'line-through text-natural-400 dark:text-natural-600'
                   : 'text-natural-900 dark:text-natural-50'
               }`}
+              style={
+                todo.status === TodoStatus.DONE
+                  ? { textDecorationColor: '#FF6600' }
+                  : undefined
+              }
             >
               {todo.title}
             </Text>
