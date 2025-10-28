@@ -56,6 +56,22 @@ function RootLayoutNav() {
         <TodoProvider>
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="add-task"
+              options={{
+                presentation: 'fullScreenModal',
+                headerShown: false,
+                animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen
+              name="todo/[id]"
+              options={{
+                presentation: 'card',
+                headerShown: false,
+                animation: 'slide_from_right',
+              }}
+            />
           </Stack>
         </TodoProvider>
       </ThemeProvider>

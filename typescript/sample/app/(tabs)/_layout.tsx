@@ -1,6 +1,6 @@
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { Tabs } from 'expo-router';
+import { Tabs, router } from 'expo-router';
 import { View, TouchableOpacity, Platform } from 'react-native';
 import { BottomTabBar } from '@react-navigation/bottom-tabs';
 
@@ -37,7 +37,7 @@ export default function TabLayout() {
           <BottomTabBar {...props} />
           <View className="absolute bottom-0 left-0 right-0" style={{ paddingBottom: Platform.OS === 'ios' ? 28 : 12, alignItems: 'center' }}>
             <TouchableOpacity
-              className="bg-natural-200 rounded-full"
+              className="bg-primary rounded-full"
               style={{
                 width: 56,
                 height: 56,
@@ -46,11 +46,9 @@ export default function TabLayout() {
                 position: 'absolute',
                 bottom: Platform.OS === 'ios' ? 48 : 24,
               }}
-              onPress={() => {
-                // TODO: Add task action
-              }}
+              onPress={() => router.push('/add-task')}
             >
-              <FontAwesome name="plus" size={24} color="#1C1D22" />
+              <FontAwesome name="plus" size={24} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
         </View>
