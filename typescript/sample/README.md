@@ -1,105 +1,52 @@
-# React Native Todo App Sample
+# React Native Todo App (Expo)
 
-A simple Todo application built with React Native and TypeScript for technology validation.
+A modern, Superlist-inspired todo application built with Expo and React Native.
 
-## Features
+## Tech Stack
 
-- Add new todo items
-- Mark todos as completed/uncompleted
-- Delete todo items
-- Clean and intuitive native UI
-- Fully typed with TypeScript
-- Comprehensive test coverage
+- **Framework**: Expo SDK 54
+- **Language**: TypeScript
+- **Navigation**: Expo Router
+- **Styling**: NativeWind v4 (Tailwind CSS)
+- **State Management**: React Context API
+- **Storage**: AsyncStorage
+- **Gestures**: React Native Gesture Handler
+- **Markdown**: react-native-markdown-display
 
 ## Getting Started
 
-### Prerequisites
-
-- Node.js (18 or higher)
-- npm or yarn
-- React Native development environment set up
-  - For iOS: Xcode and CocoaPods
-  - For Android: Android Studio and Android SDK
-
 ### Installation
 
-1. Navigate to the project directory:
-```bash
-cd typescript/sample
-```
-
-2. Install dependencies:
 ```bash
 npm install
-# or
-yarn install
 ```
 
-3. For iOS, install CocoaPods dependencies:
-```bash
-cd ios && pod install && cd ..
-```
+### Development
 
-### Running the App
-
-#### iOS
 ```bash
-npm run ios
-# or
-yarn ios
-```
-
-#### Android
-```bash
-npm run android
-# or
-yarn android
-```
-
-#### Start Metro Bundler (if needed separately)
-```bash
+# Start development server
 npm start
-# or
-yarn start
+
+# Run on iOS simulator
+npm run ios
+
+# Run on Android emulator
+npm run android
+
+# Run on web browser
+npm run web
 ```
 
-### Running Tests
+After running `npm start`, you can:
+- Scan the QR code with Expo Go app (iOS/Android)
+- Press `i` for iOS simulator
+- Press `a` for Android emulator
+- Press `w` for web browser
 
-```bash
-npm test
-# or
-yarn test
-```
+## Features
 
-### Linting
-
-```bash
-npm run lint
-# or
-yarn lint
-```
-
-## Project Structure
-
-```
-src/
-  App.tsx           # Main application component and Todo implementation
-__tests__/
-  App.test.tsx      # Component tests
-index.js            # Application entry point
-```
-
-## Implementation Details
-
-- **Language**: TypeScript with strict mode enabled
-- **State Management**: React useState hooks
-- **UI Components**: React Native core components (no external UI libraries)
-- **Testing**: Jest and React Native Testing Library
-- **Architecture**: Single-component implementation for demo purposes
-
-## Technology Stack
-
-- React Native 0.73.0
-- TypeScript 5.3.0
-- Jest for testing
-- React Native Testing Library
+- Task management (create, edit, delete)
+- Task status tracking (TODO, IN_PROGRESS, DONE)
+- Markdown support for task descriptions
+- Swipe-to-delete
+- Data persistence with AsyncStorage
