@@ -46,12 +46,12 @@ export function TodoItem({ todo }: TodoItemProps) {
   return (
     <Swipeable renderRightActions={renderRightActions}>
       <TouchableOpacity
-        className="flex-row items-center mx-4 mb-2 px-4 py-3 gap-3 bg-white dark:bg-natural-800 rounded-xl shadow-superlist active:scale-[0.98] transition-transform duration-150"
+        className="flex-row items-center mx-4 mb-2 px-4 py-3 gap-3 bg-white dark:bg-natural-800 rounded-xl"
         onPress={cycleStatus}
         activeOpacity={0.9}
       >
         <View
-          className={`w-5 h-5 rounded-full border-2 justify-center items-center transition-all duration-200 ${
+          className={`w-5 h-5 rounded-full border-2 justify-center items-center ${
             todo.status === TodoStatus.DONE
               ? 'bg-primary border-primary'
               : todo.status === TodoStatus.IN_PROGRESS
@@ -68,7 +68,7 @@ export function TodoItem({ todo }: TodoItemProps) {
         </View>
         <View className="flex-1">
           <Text
-            className={`text-base font-normal transition-all duration-200 ${
+            className={`text-base font-normal ${
               todo.status === TodoStatus.DONE
                 ? 'line-through text-natural-400 dark:text-natural-600'
                 : 'text-natural-900 dark:text-natural-50'

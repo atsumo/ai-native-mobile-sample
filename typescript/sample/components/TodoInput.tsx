@@ -15,10 +15,10 @@ export function TodoInput() {
   };
 
   return (
-    <View className={`mx-4 my-3 px-4 py-3 rounded-xl bg-natural-50 dark:bg-natural-800 border-2 transition-all duration-200 ${isFocused ? 'border-primary shadow-superlist-md' : 'border-transparent'}`}>
+    <View className={`mx-4 my-3 px-4 py-3 rounded-xl bg-natural-50 dark:bg-natural-800 border-2 ${isFocused ? 'border-primary' : 'border-transparent'}`}>
       <View className="flex-row items-center gap-3">
         <TouchableOpacity
-          className="w-5 h-5 rounded-full border-2 border-natural-300 dark:border-natural-600 justify-center items-center active:scale-95 transition-transform duration-150"
+          className="w-5 h-5 rounded-full border-2 border-natural-300 dark:border-natural-600 justify-center items-center"
           onPress={handleAddTodo}
         >
           <Text className="text-sm text-natural-400 dark:text-natural-500 font-light leading-none">+</Text>
