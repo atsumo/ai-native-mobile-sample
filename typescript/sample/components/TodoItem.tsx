@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { Todo, TodoStatus } from '@/types/todo';
 import { useTodos } from '@/contexts/TodoContext';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { formatDueDate, isOverdue } from '@/utils/date';
 
 interface TodoItemProps {
   todo: Todo;
@@ -34,27 +35,6 @@ export function TodoItem({ todo }: TodoItemProps) {
       default:
         return null;
     }
-  };
-
-  const formatDueDate = (dueDate: number) => {
-    const date = new Date(dueDate);
-    const now = new Date();
-    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    const dueDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-
-    if (dueDay.getTime() === today.getTime()) {
-      return `Today, ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
-    } else if (dueDay.getTime() === tomorrow.getTime()) {
-      return `Tomorrow, ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
-    } else {
-      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    }
-  };
-
-  const isOverdue = (dueDate: number) => {
-    return dueDate < Date.now() && todo.status !== TodoStatus.DONE;
   };
 
   const renderRightActions = () => (
@@ -117,11 +97,11 @@ export function TodoItem({ todo }: TodoItemProps) {
                     <FontAwesome
                       name="calendar"
                       size={11}
-                      color={isOverdue(todo.dueDate) ? '#EF4444' : '#6E6E6B'}
+                      color={isOverdue(todo.dueDate, todo.status) ? '#EF4444' : '#6E6E6B'}
                     />
                     <Text
                       className={`text-xs font-normal ${
-                        isOverdue(todo.dueDate) ? 'text-accent-red' : 'text-natural-500'
+                        isOverdue(todo.dueDate, todo.status) ? 'text-accent-red' : 'text-natural-500'
                       }`}
                     >
                       {formatDueDate(todo.dueDate)}
