@@ -121,13 +121,18 @@ export default function TodoDetailScreen() {
             </TouchableOpacity>
             <View className="flex-1">
               <TextInput
-                className="text-xl font-semibold text-natural-900"
+                className={`text-xl font-semibold ${
+                  todo.status === TodoStatus.DONE
+                    ? 'text-natural-400 line-through'
+                    : 'text-natural-900'
+                }`}
                 style={{
                   fontSize: 20,
                   lineHeight: 28,
                   fontWeight: '600',
                   padding: 0,
                   margin: 0,
+                  textDecorationLine: todo.status === TodoStatus.DONE ? 'line-through' : 'none',
                 }}
                 value={title}
                 onChangeText={setTitle}
