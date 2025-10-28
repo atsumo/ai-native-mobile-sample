@@ -7,9 +7,11 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Platform,
+  Modal,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import Markdown from 'react-native-markdown-display';
 import { useTodos } from '@/contexts/TodoContext';
 import { TodoStatus } from '@/types/todo';
@@ -23,6 +25,8 @@ export default function TodoDetailScreen() {
   const [description, setDescription] = useState(todo?.description || '');
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(todo?.dueDate ? new Date(todo.dueDate) : new Date());
 
   if (!todo) {
     return (
@@ -44,6 +48,19 @@ export default function TodoDetailScreen() {
   const handleBlurDescription = () => {
     updateTodo(id!, { description });
     setIsEditingDescription(false);
+  };
+
+  const handleDateChange = (event: any, date?: Date) => {
+    setShowDatePicker(Platform.OS === 'ios');
+    if (date) {
+      setSelectedDate(date);
+      updateTodo(id!, { dueDate: date.getTime() });
+    }
+  };
+
+  const handleRemoveDueDate = () => {
+    updateTodo(id!, { dueDate: undefined });
+    setShowDatePicker(false);
   };
 
   const cycleStatus = () => {
@@ -128,10 +145,15 @@ export default function TodoDetailScreen() {
           </View>
 
           <View className="flex-row gap-2">
-            <View className="flex-row items-center px-3 py-2 bg-natural-50 rounded-lg">
+            <TouchableOpacity
+              className="flex-row items-center px-3 py-2 bg-natural-50 rounded-lg"
+              onPress={() => setShowDatePicker(true)}
+            >
               <FontAwesome name="calendar" size={14} color="#6E6E6B" />
-              <Text className="ml-2 text-sm text-natural-700">Due date</Text>
-            </View>
+              <Text className="ml-2 text-sm text-natural-700">
+                {todo.dueDate ? new Date(todo.dueDate).toLocaleDateString() : 'Due date'}
+              </Text>
+            </TouchableOpacity>
             <View className="flex-row items-center px-3 py-2 bg-natural-50 rounded-lg">
               <FontAwesome name="user" size={14} color="#6E6E6B" />
               <Text className="ml-2 text-sm text-natural-700">Assignee</Text>
@@ -247,6 +269,48 @@ export default function TodoDetailScreen() {
           </Text>
         </View>
       </ScrollView>
+
+      {/* Date Picker Modal */}
+      {showDatePicker && (
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={showDatePicker}
+          onRequestClose={() => setShowDatePicker(false)}
+        >
+          <View className="flex-1 justify-end bg-black/50">
+            <View className="bg-white rounded-t-3xl p-4 pb-8">
+              <View className="flex-row justify-between items-center mb-4">
+                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                  <Text className="text-base text-natural-700">Cancel</Text>
+                </TouchableOpacity>
+                <Text className="text-base font-semibold text-natural-900">Select Date</Text>
+                {todo.dueDate && (
+                  <TouchableOpacity onPress={handleRemoveDueDate}>
+                    <Text className="text-base text-accent-red">Remove</Text>
+                  </TouchableOpacity>
+                )}
+                {!todo.dueDate && <View style={{ width: 60 }} />}
+              </View>
+              <DateTimePicker
+                value={selectedDate}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={handleDateChange}
+                style={{ height: 200 }}
+              />
+              {Platform.OS === 'ios' && (
+                <TouchableOpacity
+                  className="mt-4 py-3 bg-primary rounded-xl items-center"
+                  onPress={() => setShowDatePicker(false)}
+                >
+                  <Text className="text-white font-semibold text-base">Done</Text>
+                </TouchableOpacity>
+              )}
+            </View>
+          </View>
+        </Modal>
+      )}
     </KeyboardAvoidingView>
   );
 }

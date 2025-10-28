@@ -36,6 +36,27 @@ export function TodoItem({ todo }: TodoItemProps) {
     }
   };
 
+  const formatDueDate = (dueDate: number) => {
+    const date = new Date(dueDate);
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const dueDay = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+    if (dueDay.getTime() === today.getTime()) {
+      return `Today, ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
+    } else if (dueDay.getTime() === tomorrow.getTime()) {
+      return `Tomorrow, ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
+    } else {
+      return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+  };
+
+  const isOverdue = (dueDate: number) => {
+    return dueDate < Date.now() && todo.status !== TodoStatus.DONE;
+  };
+
   const renderRightActions = () => (
     <TouchableOpacity
       className="bg-accent-red justify-center items-end px-6"
@@ -81,12 +102,32 @@ export function TodoItem({ todo }: TodoItemProps) {
             >
               {todo.title}
             </Text>
-            {getStatusLabel(todo.status) && (
-              <View className="flex-row items-center gap-1 mt-1">
-                <FontAwesome name="clock-o" size={11} color="#6E6E6B" />
-                <Text className="text-xs text-natural-500 font-normal">
-                  {getStatusLabel(todo.status)}
-                </Text>
+            {(getStatusLabel(todo.status) || todo.dueDate) && (
+              <View className="flex-row items-center gap-3 mt-1">
+                {getStatusLabel(todo.status) && (
+                  <View className="flex-row items-center gap-1">
+                    <FontAwesome name="clock-o" size={11} color="#6E6E6B" />
+                    <Text className="text-xs text-natural-500 font-normal">
+                      {getStatusLabel(todo.status)}
+                    </Text>
+                  </View>
+                )}
+                {todo.dueDate && (
+                  <View className="flex-row items-center gap-1">
+                    <FontAwesome
+                      name="calendar"
+                      size={11}
+                      color={isOverdue(todo.dueDate) ? '#EF4444' : '#6E6E6B'}
+                    />
+                    <Text
+                      className={`text-xs font-normal ${
+                        isOverdue(todo.dueDate) ? 'text-accent-red' : 'text-natural-500'
+                      }`}
+                    >
+                      {formatDueDate(todo.dueDate)}
+                    </Text>
+                  </View>
+                )}
               </View>
             )}
           </View>

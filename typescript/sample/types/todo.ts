@@ -10,6 +10,7 @@ export interface Todo {
   status: TodoStatus;
   createdAt: number;
   description?: string;
+  dueDate?: number;
 }
 
 export type FilterType = 'all' | 'active' | 'completed';
