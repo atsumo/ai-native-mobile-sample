@@ -10,10 +10,22 @@ const wrapper = ({ children }: { children: React.ReactNode }) => (
 );
 
 describe('TodoContext', () => {
+  let mockDateNow: number;
+
   beforeEach(() => {
     // Clear all mocks before each test
     jest.clearAllMocks();
     (AsyncStorage.getItem as jest.Mock).mockResolvedValue(null);
+
+    // Mock Date.now() to return incrementing values for unique IDs
+    mockDateNow = 1000000;
+    jest.spyOn(Date, 'now').mockImplementation(() => {
+      return mockDateNow++;
+    });
+  });
+
+  afterEach(() => {
+    jest.restoreAllMocks();
   });
 
   describe('useTodos hook', () => {
@@ -41,6 +53,11 @@ describe('TodoContext', () => {
     it('should add a new todo', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
 
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
+
       act(() => {
         result.current.addTodo('Test Todo');
       });
@@ -55,6 +72,11 @@ describe('TodoContext', () => {
     it('should add a todo with description', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
 
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
+
       act(() => {
         result.current.addTodo('Test Todo', 'Test Description');
       });
@@ -67,6 +89,11 @@ describe('TodoContext', () => {
     it('should save todos to AsyncStorage', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
 
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
+
       act(() => {
         result.current.addTodo('Test Todo');
       });
@@ -78,6 +105,11 @@ describe('TodoContext', () => {
 
     it('should add new todo to the beginning of the list', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
+
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
 
       act(() => {
         result.current.addTodo('First Todo');
@@ -95,6 +127,11 @@ describe('TodoContext', () => {
   describe('deleteTodo', () => {
     it('should delete a todo by id', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
+
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
 
       // Add a todo first
       act(() => {
@@ -120,28 +157,35 @@ describe('TodoContext', () => {
     it('should not affect other todos when deleting', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
 
-      // Add multiple todos
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
+
+      // Add multiple todos and then delete one
       act(() => {
         result.current.addTodo('First Todo');
         result.current.addTodo('Second Todo');
         result.current.addTodo('Third Todo');
       });
 
+      // Wait for todos and perform deletion in verification
       await waitFor(() => {
         expect(result.current.todos).toHaveLength(3);
       });
 
+      // Get ID and delete
       const secondTodoId = result.current.todos[1].id;
 
-      // Delete the second todo
       act(() => {
         result.current.deleteTodo(secondTodoId);
       });
 
+      // Verify deletion
       await waitFor(() => {
         expect(result.current.todos).toHaveLength(2);
         expect(result.current.todos.find(t => t.id === secondTodoId)).toBeUndefined();
-      });
+      }, { timeout: 3000 });
     });
   });
 
@@ -149,18 +193,24 @@ describe('TodoContext', () => {
     it('should update todo status', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
 
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
+
       act(() => {
         result.current.addTodo('Test Todo');
       });
 
+      let todoId: string;
       await waitFor(() => {
         expect(result.current.todos).toHaveLength(1);
+        todoId = result.current.todos[0].id;
+        expect(todoId).toBeDefined();
       });
 
-      const todoId = result.current.todos[0].id;
-
       act(() => {
-        result.current.updateTodoStatus(todoId, TodoStatus.DONE);
+        result.current.updateTodoStatus(todoId!, TodoStatus.DONE);
       });
 
       await waitFor(() => {
@@ -171,6 +221,11 @@ describe('TodoContext', () => {
 
     it('should not affect other properties when updating status', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
+
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
 
       act(() => {
         result.current.addTodo('Test Todo', 'Test Description');
@@ -198,6 +253,11 @@ describe('TodoContext', () => {
     it('should update todo title', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
 
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
+
       act(() => {
         result.current.addTodo('Test Todo');
       });
@@ -219,6 +279,11 @@ describe('TodoContext', () => {
 
     it('should update todo description', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
+
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
 
       act(() => {
         result.current.addTodo('Test Todo');
@@ -242,6 +307,11 @@ describe('TodoContext', () => {
     it('should update todo dueDate', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
 
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
+
       act(() => {
         result.current.addTodo('Test Todo');
       });
@@ -264,6 +334,11 @@ describe('TodoContext', () => {
 
     it('should update multiple properties at once', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
+
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
 
       act(() => {
         result.current.addTodo('Test Todo');
@@ -299,6 +374,11 @@ describe('TodoContext', () => {
     it('should filter todos by "all"', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
 
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
+
       act(() => {
         result.current.addTodo('Todo 1');
         result.current.addTodo('Todo 2');
@@ -320,6 +400,11 @@ describe('TodoContext', () => {
 
     it('should filter todos by "active"', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
+
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
 
       act(() => {
         result.current.addTodo('Todo 1');
@@ -344,6 +429,11 @@ describe('TodoContext', () => {
 
     it('should filter todos by "completed"', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
+
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
 
       act(() => {
         result.current.addTodo('Todo 1');
@@ -372,6 +462,11 @@ describe('TodoContext', () => {
     it('should calculate stats correctly', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
 
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
+
       act(() => {
         result.current.addTodo('Todo 1');
         result.current.addTodo('Todo 2');
@@ -398,6 +493,11 @@ describe('TodoContext', () => {
 
     it('should update stats when todos change', async () => {
       const { result } = renderHook(() => useTodos(), { wrapper });
+
+      // Wait for initial load to complete
+      await waitFor(() => {
+        expect(result.current.todos).toEqual([]);
+      });
 
       expect(result.current.stats.total).toBe(0);
 
