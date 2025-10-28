@@ -42,7 +42,7 @@ export function TodoItem({ todo }: TodoItemProps) {
           <View
             className={`w-5 h-5 rounded-full border-2 justify-center items-center ${
               todo.status === TodoStatus.DONE
-                ? 'bg-accent-red border-accent-red'
+                ? 'bg-accent-orange border-accent-orange'
                 : 'border-natural-300 dark:border-natural-600'
             }`}
           >

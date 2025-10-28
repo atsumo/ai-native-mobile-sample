@@ -37,7 +37,7 @@ export default function TabLayout() {
           <BottomTabBar {...props} />
           <View className="absolute bottom-0 left-0 right-0" style={{ paddingBottom: Platform.OS === 'ios' ? 28 : 12, alignItems: 'center' }}>
             <TouchableOpacity
-              className="bg-primary rounded-full"
+              className="bg-accent-orange rounded-full"
               style={{
                 width: 56,
                 height: 56,

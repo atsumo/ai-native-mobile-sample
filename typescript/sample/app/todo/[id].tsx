@@ -110,7 +110,7 @@ export default function TodoDetailScreen() {
               <View
                 className={`w-6 h-6 rounded-full border-2 justify-center items-center ${
                   todo.status === TodoStatus.DONE
-                    ? 'bg-accent-red border-accent-red'
+                    ? 'bg-accent-orange border-accent-orange'
                     : 'border-natural-300'
                 }`}
               >
@@ -297,7 +297,7 @@ export default function TodoDetailScreen() {
                   />
                   {Platform.OS === 'ios' && (
                     <TouchableOpacity
-                      className="mt-4 py-3 bg-primary rounded-xl items-center"
+                      className="mt-4 py-3 bg-accent-orange rounded-xl items-center"
                       onPress={() => setShowDatePicker(false)}
                     >
                       <Text className="text-white font-semibold text-base">Done</Text>

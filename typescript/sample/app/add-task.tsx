@@ -83,7 +83,7 @@ export default function AddTaskModal() {
 
             <TouchableOpacity
               onPress={handleSubmit}
-              className="w-12 h-12 bg-primary rounded-full items-center justify-center"
+              className="w-12 h-12 bg-accent-orange rounded-full items-center justify-center"
               disabled={!text.trim()}
               style={{ opacity: text.trim() ? 1 : 0.5 }}
             >
