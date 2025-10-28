@@ -19,7 +19,7 @@ import { TodoStatus } from '@/types/todo';
 
 export default function TodoDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { todos, updateTodo, updateTodoStatus } = useTodos();
+  const { todos, updateTodo, updateTodoStatus, deleteTodo } = useTodos();
   const todo = todos.find((t) => t.id === id);
 
   const [title, setTitle] = useState(todo?.title || '');
@@ -27,6 +27,8 @@ export default function TodoDetailScreen() {
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showMenuModal, setShowMenuModal] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [selectedDate, setSelectedDate] = useState(todo?.dueDate ? new Date(todo.dueDate) : new Date());
 
   if (!todo) {
@@ -72,6 +74,11 @@ export default function TodoDetailScreen() {
     }
   };
 
+  const handleDelete = () => {
+    deleteTodo(id!);
+    router.back();
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -97,7 +104,10 @@ export default function TodoDetailScreen() {
               <Text className="text-base font-medium text-natural-900">Done</Text>
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity className="w-10 h-10 rounded-full bg-white items-center justify-center">
+            <TouchableOpacity
+              className="w-10 h-10 rounded-full bg-white items-center justify-center"
+              onPress={() => setShowMenuModal(true)}
+            >
               <FontAwesome name="ellipsis-h" size={18} color="#1C1D22" />
             </TouchableOpacity>
           )}
@@ -309,6 +319,73 @@ export default function TodoDetailScreen() {
                       <Text className="text-white font-semibold text-base">Done</Text>
                     </TouchableOpacity>
                   )}
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      )}
+
+      {/* Menu Modal */}
+      {showMenuModal && (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={showMenuModal}
+          onRequestClose={() => setShowMenuModal(false)}
+        >
+          <TouchableWithoutFeedback onPress={() => setShowMenuModal(false)}>
+            <View className="flex-1 justify-end bg-black/50">
+              <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+                <View className="bg-white rounded-t-3xl p-4 pb-8">
+                  <View className="w-12 h-1 bg-natural-200 rounded-full self-center mb-4" />
+                  <TouchableOpacity
+                    className="py-4 px-4 flex-row items-center gap-3"
+                    onPress={() => {
+                      setShowMenuModal(false);
+                      setShowDeleteConfirm(true);
+                    }}
+                  >
+                    <FontAwesome name="trash-o" size={20} color="#EF4444" />
+                    <Text className="text-base text-accent-red font-medium">Delete Task</Text>
+                  </TouchableOpacity>
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteConfirm && (
+        <Modal
+          animationType="fade"
+          transparent={true}
+          visible={showDeleteConfirm}
+          onRequestClose={() => setShowDeleteConfirm(false)}
+        >
+          <TouchableWithoutFeedback onPress={() => setShowDeleteConfirm(false)}>
+            <View className="flex-1 justify-center items-center bg-black/50 px-8">
+              <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+                <View className="bg-white rounded-2xl p-6 w-full">
+                  <Text className="text-xl font-semibold text-natural-900 mb-2">Delete Task</Text>
+                  <Text className="text-base text-natural-600 mb-6">
+                    Are you sure you want to delete this task? This action cannot be undone.
+                  </Text>
+                  <View className="flex-row gap-3">
+                    <TouchableOpacity
+                      className="flex-1 py-3 bg-natural-100 rounded-xl items-center"
+                      onPress={() => setShowDeleteConfirm(false)}
+                    >
+                      <Text className="text-base font-medium text-natural-900">Cancel</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      className="flex-1 py-3 bg-accent-red rounded-xl items-center"
+                      onPress={handleDelete}
+                    >
+                      <Text className="text-base font-medium text-white">Delete</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </TouchableWithoutFeedback>
             </View>
