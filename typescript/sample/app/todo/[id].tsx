@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   Modal,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -65,8 +66,6 @@ export default function TodoDetailScreen() {
 
   const cycleStatus = () => {
     if (todo.status === TodoStatus.TODO) {
-      updateTodoStatus(id!, TodoStatus.IN_PROGRESS);
-    } else if (todo.status === TodoStatus.IN_PROGRESS) {
       updateTodoStatus(id!, TodoStatus.DONE);
     } else {
       updateTodoStatus(id!, TodoStatus.TODO);
@@ -111,17 +110,12 @@ export default function TodoDetailScreen() {
               <View
                 className={`w-6 h-6 rounded-full border-2 justify-center items-center ${
                   todo.status === TodoStatus.DONE
-                    ? 'bg-primary border-primary'
-                    : todo.status === TodoStatus.IN_PROGRESS
-                    ? 'border-accent-orange'
+                    ? 'bg-accent-red border-accent-red'
                     : 'border-natural-300'
                 }`}
               >
                 {todo.status === TodoStatus.DONE && (
                   <FontAwesome name="check" size={12} color="white" />
-                )}
-                {todo.status === TodoStatus.IN_PROGRESS && (
-                  <View className="w-2.5 h-2.5 rounded-full bg-accent-orange" />
                 )}
               </View>
             </TouchableOpacity>
@@ -278,37 +272,41 @@ export default function TodoDetailScreen() {
           visible={showDatePicker}
           onRequestClose={() => setShowDatePicker(false)}
         >
-          <View className="flex-1 justify-end bg-black/50">
-            <View className="bg-white rounded-t-3xl p-4 pb-8">
-              <View className="flex-row justify-between items-center mb-4">
-                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
-                  <Text className="text-base text-natural-700">Cancel</Text>
-                </TouchableOpacity>
-                <Text className="text-base font-semibold text-natural-900">Select Date</Text>
-                {todo.dueDate && (
-                  <TouchableOpacity onPress={handleRemoveDueDate}>
-                    <Text className="text-base text-accent-red">Remove</Text>
-                  </TouchableOpacity>
-                )}
-                {!todo.dueDate && <View style={{ width: 60 }} />}
-              </View>
-              <DateTimePicker
-                value={selectedDate}
-                mode="date"
-                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
-                onChange={handleDateChange}
-                style={{ height: 200 }}
-              />
-              {Platform.OS === 'ios' && (
-                <TouchableOpacity
-                  className="mt-4 py-3 bg-primary rounded-xl items-center"
-                  onPress={() => setShowDatePicker(false)}
-                >
-                  <Text className="text-white font-semibold text-base">Done</Text>
-                </TouchableOpacity>
-              )}
+          <TouchableWithoutFeedback onPress={() => setShowDatePicker(false)}>
+            <View className="flex-1 justify-end bg-black/50">
+              <TouchableWithoutFeedback onPress={(e) => e.stopPropagation()}>
+                <View className="bg-white rounded-t-3xl p-4 pb-8">
+                  <View className="flex-row justify-between items-center mb-4">
+                    <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                      <Text className="text-base text-natural-700">Cancel</Text>
+                    </TouchableOpacity>
+                    <Text className="text-base font-semibold text-natural-900">Select Date</Text>
+                    {todo.dueDate && (
+                      <TouchableOpacity onPress={handleRemoveDueDate}>
+                        <Text className="text-base text-accent-red">Remove</Text>
+                      </TouchableOpacity>
+                    )}
+                    {!todo.dueDate && <View style={{ width: 60 }} />}
+                  </View>
+                  <DateTimePicker
+                    value={selectedDate}
+                    mode="date"
+                    display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                    onChange={handleDateChange}
+                    style={{ height: 200 }}
+                  />
+                  {Platform.OS === 'ios' && (
+                    <TouchableOpacity
+                      className="mt-4 py-3 bg-primary rounded-xl items-center"
+                      onPress={() => setShowDatePicker(false)}
+                    >
+                      <Text className="text-white font-semibold text-base">Done</Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
+              </TouchableWithoutFeedback>
             </View>
-          </View>
+          </TouchableWithoutFeedback>
         </Modal>
       )}
     </KeyboardAvoidingView>

@@ -16,8 +16,6 @@ export function TodoItem({ todo }: TodoItemProps) {
 
   const cycleStatus = () => {
     if (todo.status === TodoStatus.TODO) {
-      updateTodoStatus(todo.id, TodoStatus.IN_PROGRESS);
-    } else if (todo.status === TodoStatus.IN_PROGRESS) {
       updateTodoStatus(todo.id, TodoStatus.DONE);
     } else {
       updateTodoStatus(todo.id, TodoStatus.TODO);
@@ -25,16 +23,7 @@ export function TodoItem({ todo }: TodoItemProps) {
   };
 
   const getStatusLabel = (status: TodoStatus) => {
-    switch (status) {
-      case TodoStatus.TODO:
-        return null;
-      case TodoStatus.IN_PROGRESS:
-        return '進行中';
-      case TodoStatus.DONE:
-        return null;
-      default:
-        return null;
-    }
+    return null;
   };
 
   const renderRightActions = () => (
@@ -53,17 +42,12 @@ export function TodoItem({ todo }: TodoItemProps) {
           <View
             className={`w-5 h-5 rounded-full border-2 justify-center items-center ${
               todo.status === TodoStatus.DONE
-                ? 'bg-primary border-primary'
-                : todo.status === TodoStatus.IN_PROGRESS
-                ? 'border-accent-orange'
+                ? 'bg-accent-red border-accent-red'
                 : 'border-natural-300 dark:border-natural-600'
             }`}
           >
             {todo.status === TodoStatus.DONE && (
               <FontAwesome name="check" size={10} color="white" />
-            )}
-            {todo.status === TodoStatus.IN_PROGRESS && (
-              <View className="w-2 h-2 rounded-full bg-accent-orange" />
             )}
           </View>
         </TouchableOpacity>

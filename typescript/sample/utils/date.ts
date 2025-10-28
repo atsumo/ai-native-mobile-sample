@@ -18,5 +18,5 @@ export const formatDueDate = (dueDate: number): string => {
 };
 
 export const isOverdue = (dueDate: number, status: TodoStatus): boolean => {
-  return dueDate < Date.now() && status !== TodoStatus.DONE;
+  return dueDate < Date.now() && status === TodoStatus.TODO;
 };
