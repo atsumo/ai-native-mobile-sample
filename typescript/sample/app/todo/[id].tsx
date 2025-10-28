@@ -19,7 +19,9 @@ export default function TodoDetailScreen() {
   const { todos, updateTodo, updateTodoStatus } = useTodos();
   const todo = todos.find((t) => t.id === id);
 
+  const [title, setTitle] = useState(todo?.title || '');
   const [description, setDescription] = useState(todo?.description || '');
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDescription, setIsEditingDescription] = useState(false);
 
   if (!todo) {
@@ -29,6 +31,15 @@ export default function TodoDetailScreen() {
       </View>
     );
   }
+
+  const handleBlurTitle = () => {
+    if (title.trim()) {
+      updateTodo(id!, { title: title.trim() });
+    } else {
+      setTitle(todo.title);
+    }
+    setIsEditingTitle(false);
+  };
 
   const handleBlurDescription = () => {
     updateTodo(id!, { description });
@@ -59,9 +70,12 @@ export default function TodoDetailScreen() {
           >
             <FontAwesome name="chevron-left" size={18} color="#1C1D22" />
           </TouchableOpacity>
-          {isEditingDescription ? (
+          {isEditingTitle || isEditingDescription ? (
             <TouchableOpacity
-              onPress={handleBlurDescription}
+              onPress={() => {
+                if (isEditingTitle) handleBlurTitle();
+                if (isEditingDescription) handleBlurDescription();
+              }}
               className="px-4 py-2 rounded-full bg-white"
             >
               <Text className="text-base font-medium text-natural-900">Done</Text>
@@ -94,9 +108,23 @@ export default function TodoDetailScreen() {
                 )}
               </View>
             </TouchableOpacity>
-            <Text className="flex-1 text-xl font-semibold text-natural-900">
-              {todo.title}
-            </Text>
+            <View className="flex-1">
+              <TextInput
+                className="text-xl font-semibold text-natural-900"
+                style={{
+                  fontSize: 20,
+                  lineHeight: 28,
+                  fontWeight: '600',
+                  padding: 0,
+                  margin: 0,
+                }}
+                value={title}
+                onChangeText={setTitle}
+                onFocus={() => setIsEditingTitle(true)}
+                onBlur={handleBlurTitle}
+                multiline
+              />
+            </View>
           </View>
 
           <View className="flex-row gap-2">

@@ -47,8 +47,8 @@ export function TodoItem({ todo }: TodoItemProps) {
 
   return (
     <Swipeable renderRightActions={renderRightActions}>
-      <View className="flex-row items-center px-4 py-3 gap-3 bg-white dark:bg-natural-800 border-b border-natural-100 dark:border-natural-700">
-        <TouchableOpacity onPress={cycleStatus}>
+      <View className="flex-row items-start px-6 py-4 gap-3 bg-white dark:bg-natural-800">
+        <TouchableOpacity onPress={cycleStatus} className="pt-0.5">
           <View
             className={`w-5 h-5 rounded-full border-2 justify-center items-center ${
               todo.status === TodoStatus.DONE
@@ -73,7 +73,7 @@ export function TodoItem({ todo }: TodoItemProps) {
         >
           <View className="flex-1">
             <Text
-              className={`text-base font-normal ${
+              className={`text-base font-normal leading-5 ${
                 todo.status === TodoStatus.DONE
                   ? 'line-through text-natural-400 dark:text-natural-600'
                   : 'text-natural-900 dark:text-natural-50'
@@ -82,9 +82,12 @@ export function TodoItem({ todo }: TodoItemProps) {
               {todo.title}
             </Text>
             {getStatusLabel(todo.status) && (
-              <Text className="text-xs text-accent-orange font-medium mt-1">
-                {getStatusLabel(todo.status)}
-              </Text>
+              <View className="flex-row items-center gap-1 mt-1">
+                <FontAwesome name="clock-o" size={11} color="#6E6E6B" />
+                <Text className="text-xs text-natural-500 font-normal">
+                  {getStatusLabel(todo.status)}
+                </Text>
+              </View>
             )}
           </View>
         </TouchableOpacity>
