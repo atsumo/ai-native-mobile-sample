@@ -1,10 +1,8 @@
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View, Alert } from 'react-native';
+import { TouchableOpacity, View, Text } from 'react-native';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { Todo, TodoStatus } from '@/types/todo';
 import { useTodos } from '@/contexts/TodoContext';
-import { Text } from './Themed';
-import { useColorScheme } from './useColorScheme';
-import Colors from '@/constants/Colors';
 
 interface TodoItemProps {
   todo: Todo;
@@ -12,33 +10,6 @@ interface TodoItemProps {
 
 export function TodoItem({ todo }: TodoItemProps) {
   const { updateTodoStatus, deleteTodo } = useTodos();
-  const colorScheme = useColorScheme();
-
-  const getStatusColor = (status: TodoStatus) => {
-    switch (status) {
-      case TodoStatus.TODO:
-        return '#6B7280';
-      case TodoStatus.IN_PROGRESS:
-        return '#F59E0B';
-      case TodoStatus.DONE:
-        return '#10B981';
-      default:
-        return '#6B7280';
-    }
-  };
-
-  const getStatusLabel = (status: TodoStatus) => {
-    switch (status) {
-      case TodoStatus.TODO:
-        return 'TODO';
-      case TodoStatus.IN_PROGRESS:
-        return '進行中';
-      case TodoStatus.DONE:
-        return '完了';
-      default:
-        return 'TODO';
-    }
-  };
 
   const cycleStatus = () => {
     if (todo.status === TodoStatus.TODO) {
@@ -50,100 +21,68 @@ export function TodoItem({ todo }: TodoItemProps) {
     }
   };
 
-  const handleDelete = () => {
-    Alert.alert(
-      'タスクを削除',
-      'このタスクを削除してもよろしいですか？',
-      [
-        { text: 'キャンセル', style: 'cancel' },
-        {
-          text: '削除',
-          style: 'destructive',
-          onPress: () => deleteTodo(todo.id),
-        },
-      ]
-    );
+  const getStatusLabel = (status: TodoStatus) => {
+    switch (status) {
+      case TodoStatus.TODO:
+        return null;
+      case TodoStatus.IN_PROGRESS:
+        return '進行中';
+      case TodoStatus.DONE:
+        return null;
+      default:
+        return null;
+    }
   };
 
-  return (
-    <View
-      style={[
-        styles.container,
-        {
-          backgroundColor: Colors[colorScheme ?? 'light'].background,
-          borderColor: Colors[colorScheme ?? 'light'].tabIconDefault,
-        },
-      ]}
+  const renderRightActions = () => (
+    <TouchableOpacity
+      className="bg-accent-red justify-center items-end px-6 rounded-r-xl"
+      onPress={() => deleteTodo(todo.id)}
     >
-      <TouchableOpacity onPress={cycleStatus} style={styles.statusButton}>
+      <Text className="text-white text-base font-semibold">削除</Text>
+    </TouchableOpacity>
+  );
+
+  return (
+    <Swipeable renderRightActions={renderRightActions}>
+      <TouchableOpacity
+        className="flex-row items-center mx-4 mb-2 px-4 py-3 gap-3 bg-white dark:bg-natural-800 rounded-xl shadow-superlist active:scale-[0.98] transition-transform duration-150"
+        onPress={cycleStatus}
+        activeOpacity={0.9}
+      >
         <View
-          style={[
-            styles.statusIndicator,
-            { backgroundColor: getStatusColor(todo.status) },
-          ]}
-        />
-        <View style={styles.textContainer}>
+          className={`w-5 h-5 rounded-full border-2 justify-center items-center transition-all duration-200 ${
+            todo.status === TodoStatus.DONE
+              ? 'bg-primary border-primary'
+              : todo.status === TodoStatus.IN_PROGRESS
+              ? 'border-accent-orange'
+              : 'border-natural-300 dark:border-natural-600'
+          }`}
+        >
+          {todo.status === TodoStatus.DONE && (
+            <Text className="text-white text-xs font-bold">✓</Text>
+          )}
+          {todo.status === TodoStatus.IN_PROGRESS && (
+            <View className="w-2 h-2 rounded-full bg-accent-orange" />
+          )}
+        </View>
+        <View className="flex-1">
           <Text
-            style={[
-              styles.title,
-              todo.status === TodoStatus.DONE && styles.completedText,
-            ]}
+            className={`text-base font-normal transition-all duration-200 ${
+              todo.status === TodoStatus.DONE
+                ? 'line-through text-natural-400 dark:text-natural-600'
+                : 'text-natural-900 dark:text-natural-50'
+            }`}
           >
             {todo.title}
           </Text>
-          <Text style={styles.statusLabel}>{getStatusLabel(todo.status)}</Text>
+          {getStatusLabel(todo.status) && (
+            <Text className="text-xs text-accent-orange font-medium mt-1">
+              {getStatusLabel(todo.status)}
+            </Text>
+          )}
         </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleDelete} style={styles.deleteButton}>
-        <Text style={styles.deleteText}>削除</Text>
-      </TouchableOpacity>
-    </View>
+    </Swipeable>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    borderBottomWidth: 1,
-    gap: 8,
-  },
-  statusButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  statusIndicator: {
-    width: 12,
-    height: 12,
-    borderRadius: 6,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 16,
-    marginBottom: 4,
-  },
-  completedText: {
-    textDecorationLine: 'line-through',
-    opacity: 0.6,
-  },
-  statusLabel: {
-    fontSize: 12,
-    opacity: 0.6,
-  },
-  deleteButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 6,
-    backgroundColor: '#EF4444',
-  },
-  deleteText: {
-    color: '#fff',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-});

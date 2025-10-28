@@ -1,14 +1,11 @@
 import React, { useState } from 'react';
-import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import { TextInput, View, Text, TouchableOpacity } from 'react-native';
 import { useTodos } from '@/contexts/TodoContext';
-import { Text } from './Themed';
-import { useColorScheme } from './useColorScheme';
-import Colors from '@/constants/Colors';
 
 export function TodoInput() {
   const [text, setText] = useState('');
+  const [isFocused, setIsFocused] = useState(false);
   const { addTodo } = useTodos();
-  const colorScheme = useColorScheme();
 
   const handleAddTodo = () => {
     if (text.trim()) {
@@ -18,60 +15,26 @@ export function TodoInput() {
   };
 
   return (
-    <View style={styles.container}>
-      <TextInput
-        style={[
-          styles.input,
-          {
-            color: Colors[colorScheme ?? 'light'].text,
-            borderColor: Colors[colorScheme ?? 'light'].tint,
-            backgroundColor: Colors[colorScheme ?? 'light'].background,
-          },
-        ]}
-        placeholder="新しいタスクを追加..."
-        placeholderTextColor={Colors[colorScheme ?? 'light'].tabIconDefault}
-        value={text}
-        onChangeText={setText}
-        onSubmitEditing={handleAddTodo}
-        returnKeyType="done"
-      />
-      <TouchableOpacity
-        style={[
-          styles.addButton,
-          { backgroundColor: Colors[colorScheme ?? 'light'].tint },
-        ]}
-        onPress={handleAddTodo}
-      >
-        <Text style={styles.addButtonText}>+</Text>
-      </TouchableOpacity>
+    <View className={`mx-4 my-3 px-4 py-3 rounded-xl bg-natural-50 dark:bg-natural-800 border-2 transition-all duration-200 ${isFocused ? 'border-primary shadow-superlist-md' : 'border-transparent'}`}>
+      <View className="flex-row items-center gap-3">
+        <TouchableOpacity
+          className="w-5 h-5 rounded-full border-2 border-natural-300 dark:border-natural-600 justify-center items-center active:scale-95 transition-transform duration-150"
+          onPress={handleAddTodo}
+        >
+          <Text className="text-sm text-natural-400 dark:text-natural-500 font-light leading-none">+</Text>
+        </TouchableOpacity>
+        <TextInput
+          className="flex-1 text-base py-0 text-natural-900 dark:text-natural-50 font-normal"
+          placeholder="New task"
+          placeholderTextColor="#8F8F8C"
+          value={text}
+          onChangeText={setText}
+          onSubmitEditing={handleAddTodo}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+          returnKeyType="done"
+        />
+      </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    padding: 16,
-    gap: 8,
-  },
-  input: {
-    flex: 1,
-    height: 48,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 16,
-    fontSize: 16,
-  },
-  addButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addButtonText: {
-    color: '#fff',
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-});
