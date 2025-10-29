@@ -10,6 +10,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '../global.css';
 
 import { TodoProvider } from '@/contexts/TodoContext';
+import { FloatingDebugButton } from '@/components/FloatingDebugButton';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -72,7 +73,16 @@ function RootLayoutNav() {
                 animation: 'slide_from_right',
               }}
             />
+            <Stack.Screen
+              name="storybook"
+              options={{
+                presentation: 'fullScreenModal',
+                headerShown: false,
+                animation: 'slide_from_bottom',
+              }}
+            />
           </Stack>
+          {__DEV__ && <FloatingDebugButton />}
         </TodoProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
